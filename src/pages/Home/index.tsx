@@ -1,13 +1,15 @@
-import { ChartBar, CurrencyDollarSimple, MagnifyingGlass } from "phosphor-react";
+import { ChartBar, CurrencyDollarSimple } from "phosphor-react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { NewTransactionModal } from "../../components/Modal/NewTransaction";
-import { FormEvent, useContext, useState } from "react";
+import ReactLoading from "react-loading";
+import { useContext } from "react";
 import { ContextApplication } from "../../context/ContextApplication";
 import { AnnualBalance } from "../../components/AnnualBalance";
+import { filterTransactionsByYear } from "../../utils/filter-transactions-by-year";
 
 export function Home(){
-  const [yearSelected, setYearSelected] = useState(2023)
-  const { user } = useContext(ContextApplication)
+  const { user, fetchTransaction, yearSelected, setYearSelected, transactions } = useContext(ContextApplication)
+  const arrayTransactionsPerMonth = filterTransactionsByYear(transactions!, yearSelected)
 
   return(
     <div className="w-full flex flex-col gap-8">
@@ -32,7 +34,21 @@ export function Home(){
             className="w-[70px] px-4 py-2 rounded-lg bg-gray-700 text-white placeholder-white"
           />
       </div>
-      <AnnualBalance year={yearSelected} />
+      {!fetchTransaction && arrayTransactionsPerMonth!.length >= 1 ? (
+        <AnnualBalance />
+      ) : !fetchTransaction && arrayTransactionsPerMonth!.length === 0 ? (
+        <strong className="text-xl font-medium text-white">Não existe transações no ano selecionado!</strong>
+      ) : (
+        <div className="w-full h-[70vh] flex items-center justify-center">
+          <ReactLoading
+            className="w-fit"
+            type="spinningBubbles"
+            color="#181C2A"
+            height="80px"
+            width="100px"
+          />
+        </div>
+      )}
     </div>
   )
 }

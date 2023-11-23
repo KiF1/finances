@@ -1,4 +1,3 @@
-import dayjs from "dayjs";
 import { Transaction } from "../context/ContextApplication";
 
 export interface TransactionsFormatedDayAndTotal{
@@ -38,16 +37,15 @@ export function filterTransactionsByYear(transactions: Transaction[], year: numb
     }
 
     for(let transactionInstallment of transactionsInstallments){
-      const dayPurchaseInstallment = transactionInstallment.createdAt;
       const monthInstallmentInLoop = parseInt(transactionInstallment.createdAt.split('/')[1]);
+      const yearInstallmentInLoop = parseInt(transactionInstallment.createdAt.split('/')[2]);
 
-      const dayInMonthInLoop = dayjs(`01/${monthActual}/${year}`).format("DD-MM-YYYY");
+      const startDate = new Date(new Date(`${yearInstallmentInLoop}/${monthInstallmentInLoop}/01`)) 
+      const finalDate = new Date(monthActual > 10 ? `${year}/${monthActual}/01` : `${year}/0${monthActual}/01`);
+      const monthsDiff = (finalDate.getFullYear() - startDate.getFullYear()) * 12 + (finalDate.getMonth() - startDate.getMonth());
+      console.log(`${yearInstallmentInLoop}/${monthInstallmentInLoop}/01`, `${year}/${monthActual}/01`,monthsDiff)
 
-      const startDate = dayjs(dayPurchaseInstallment, { format: 'DD-MM-YYYY' });
-      const endDate = dayjs(dayInMonthInLoop);
-      const monthsDiff = endDate.diff(startDate, 'month');
-
-      if(monthInstallmentInLoop !== monthActual && monthActual >= monthInstallmentInLoop  && transactionInstallment.installments && monthsDiff <= transactionInstallment.installments){
+      if(monthInstallmentInLoop !== monthActual && transactionInstallment.installments && monthsDiff <= transactionInstallment.installments && monthsDiff > 0){
         total -= transactionInstallment.value / transactionInstallment.installments
         totalOutcome += transactionInstallment.value / transactionInstallment.installments
       }

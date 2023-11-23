@@ -18,9 +18,13 @@ export interface Transaction{
 
 interface ContextType {
   user: User | null;
+  yearSelected: number;
   transactions: Transaction[] | undefined;
-  refetchTransactions: (options?: RefetchOptions | undefined) => Promise<QueryObserverResult<Transaction[], Error>>;
+  fetchTransaction: boolean;
+  transactionsInYearSelected: Transaction[] | undefined
   transactionsCollectionRef: CollectionReference<DocumentData, DocumentData>
+  setYearSelected: (value: number) => void;
+  refetchTransactions: (options?: RefetchOptions | undefined) => Promise<QueryObserverResult<Transaction[], Error>>;
 }
 
 interface ContextProviderProps { children: ReactNode }
@@ -32,10 +36,11 @@ export function ContextProvider({ children }: ContextProviderProps) {
   const initialUser: User | null = storedUser ? JSON.parse(storedUser) : null;
 
   const [user, setUser] = useState<User | null>(initialUser);
+  const [yearSelected, setYearSelected] = useState(2023);
   
   const transactionsCollectionRef = collection(database, 'transactions');
 
-  const { data: transactions, refetch: refetchTransactions } = useQuery<Transaction[], Error>({
+  const { data: transactions, isFetching: fetchTransaction, refetch: refetchTransactions } = useQuery<Transaction[], Error>({
     queryKey: ["transactions"],
     queryFn: async () => {
       const data = await getDocs(transactionsCollectionRef);
@@ -45,6 +50,8 @@ export function ContextProvider({ children }: ContextProviderProps) {
       return filteredData;
     },
   });
+
+  const transactionsInYearSelected = transactions?.filter(transaction => parseInt(transaction.createdAt.split('/')[2]) === yearSelected);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((authUser) => {
@@ -57,7 +64,7 @@ export function ContextProvider({ children }: ContextProviderProps) {
   }, []);
 
   return (
-    <ContextApplication.Provider value={{ user, transactions, refetchTransactions, transactionsCollectionRef }}>
+    <ContextApplication.Provider value={{ user, yearSelected, transactions, fetchTransaction, refetchTransactions, setYearSelected, transactionsInYearSelected, transactionsCollectionRef }}>
       {children}
     </ContextApplication.Provider>
   );
