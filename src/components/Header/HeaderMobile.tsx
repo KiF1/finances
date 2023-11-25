@@ -9,7 +9,7 @@ export function HeaderMobile(){
         <Dialog.Trigger asChild>
           <TextAlignJustify className='w-12 h-12' color='#ffff' />
         </Dialog.Trigger>
-        <Dialog.Portal className='w-full h-screen'>
+        <Dialog.Portal>
           <Dialog.Content className="w-full h-full background-header top-0 fixed z-[100] focus-visible:outline-0 transition-all">
               <div className='w-full justify-between flex items-center gap-8 top-4 h-[150px] p-4 sm:p-8'>
                 <div className="w-full flex items-center gap-2 lg:pb-8">

@@ -1,5 +1,4 @@
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import { Table } from '../Table';
 import { useContext, useEffect } from 'react';
 import { ContextApplication } from '../../context/ContextApplication';
 import { FilterBankInvoiceInYear } from '../../utils/filter-bank-invoices-in-year';
