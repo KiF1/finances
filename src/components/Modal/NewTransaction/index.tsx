@@ -3,11 +3,12 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useContext, useEffect, useState } from "react";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { CaretCircleDown, CaretCircleUp, X } from "phosphor-react";
 import { addDoc } from "firebase/firestore";
 import { ContextApplication } from "../../../context/ContextApplication";
 import dayjs from 'dayjs';
+import { Toast } from "../../Toast";
 
 
 const newTransactionFormSchema = z.object({
@@ -28,7 +29,7 @@ export function NewTransactionModal() {
   const [incomeActive, setIncomeActive] = useState(false);
   const [outcomeActive, setOutcomeActive] = useState(false);
 
-  const { user, refetchTransactions, transactionsCollectionRef  } = useContext(ContextApplication)
+  const { user, refetchTransactions, transactionsCollectionRef, banks  } = useContext(ContextApplication)
 
   const {
     register,
@@ -88,29 +89,7 @@ export function NewTransactionModal() {
 
   return (
     <Dialog.Portal>
-      <Toaster position="top-right" reverseOrder={true} toastOptions={{
-        duration: 5000,
-        style: {
-          padding: '12px 16px',
-          borderRadius: '16px'
-        },
-        success: {
-          style: {
-            backgroundColor: '#323238',
-            color: '#ffffff',
-            fontSize: '16px',
-            fontWeight: '500'
-          }
-        },
-        error: {
-          style: {
-            backgroundColor: '#323238',
-            color: '#AB222E',
-            fontSize: '16px',
-            fontWeight: '500'
-          }
-        }
-      }} />
+      <Toast />
       <div className="fixed z-[200] w-full h-full inset-0 bg-black bg-opacity-75">
         <div className="w-[85%] md:w-[35%] mx-auto p-10 bg-gray-800 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-md">
           <Dialog.Title className="text-white">Nova Transação</Dialog.Title>
@@ -142,16 +121,18 @@ export function NewTransactionModal() {
               {...register("value", { valueAsNumber: true })}
               className="w-full p-3 rounded-lg bg-gray-700 text-white placeholder-white"
             />
-            <select {...register("method")} className='w-full bg-gray-700 text-white text-sm p-3 rounded-lg'>
+            {banks !== undefined && (
+              <select {...register("method")} className='w-full bg-gray-700 text-white text-sm p-3 rounded-lg'>
                 <option value="">Escolha o Método</option>
-                  <option value="transferencia_santander">Tranferência Recebida</option>
-                  <option value="debit_nubank">Débito - Nubank</option>
-                  <option value="credit_nubank">Crédito - Nubank</option>
-                  <option value="debit_santander">Débito -  Santander</option>
-                  <option value="credit_santander">Crédito - Santander</option>
-                  <option value="debit_will">Débito - Will</option>
-                  <option value="credit_will">Crédito - Will</option>
-            </select>
+                {banks.map(bank => (
+                  <>
+                    <option value={`pix_${bank.bank}`}>Pix - {bank.bank}</option>
+                    <option value={`debit_${bank.bank}`}>Débito - {bank.bank}</option>
+                    <option value={`credit_${bank.bank}`}>Crédito - {bank.bank}</option>
+                  </>
+                ))}
+              </select>
+            )}
             {installmentsActive && (
               <input
               type="number"

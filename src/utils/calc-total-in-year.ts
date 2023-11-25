@@ -1,12 +1,12 @@
-import { Transaction } from "../context/ContextApplication";
+import { Bank, Transaction } from "../context/ContextApplication";
 import { filterTransactionsByYear } from "./filter-transactions-by-year";
 
 export interface TransactionsFormatedTotal{
   total: number;
   type: string;
 }
-export function calcTotalInYear(transactions: Transaction[], yearSelected: number){
-  const arrayTransactionsPerMonth = filterTransactionsByYear(transactions!, yearSelected);
+export function calcTotalInYear(transactions: Transaction[], banks: Bank[], yearSelected: number){
+  const arrayTransactionsPerMonth = filterTransactionsByYear(transactions!, banks!, yearSelected);
 
   let balanceInTheYear = 0;
   let incomesInTheYear = 0;

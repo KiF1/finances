@@ -1,4 +1,4 @@
-import { Bank, Transaction } from "../context/ContextApplication";
+import { Transaction } from "../context/ContextApplication";
 
 export interface TransactionsFormatedDayAndTotal{
   date: string;
@@ -8,33 +8,24 @@ export interface TransactionsFormatedDayAndTotal{
   installments: number | undefined;
 }
 
-export function filterTransactionsByYear(transactions: Transaction[], banks: Bank[], year: number){
+export function FilterBankInvoiceInYear(transactions: Transaction[], year: number, bank: string, dayInvoice: number){
   const months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho','Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
   const transactionsInstallments = transactions.filter(transaction => transaction.method.split('_')[0] === 'credit');
 
   function calcTotalInMonth(transactionsFormatedDayAndTotal: TransactionsFormatedDayAndTotal[], monthActual: number) {
-    let total = 0;
-    let totalIncome = 0;
+    let limitSpent = 0;
     let totalOutcome = 0;
 
-    
-    for (let transaction of transactionsFormatedDayAndTotal) {
-      const bankTransaction = transaction.method.split('_')[1].toLocaleLowerCase();
-      const dateBank = banks!.find(bank => bank.bank.toLocaleLowerCase() === bankTransaction)!.date;
+    const invoiceClosingDay = dayInvoice;
 
-      const invoiceClosingDay = dateBank;
+    for (let transaction of transactionsFormatedDayAndTotal) {
       const dayActualTransaction = parseInt(transaction.date.split('/')[0])
 
-      if(transaction.type === 'income'){
-        total += transaction.total;
-        totalIncome += transaction.total;
-      }else if(transaction.method.split('_')[0] === 'credit' && transaction.installments && dayActualTransaction < invoiceClosingDay){
+      if(transaction.method.split('_')[0] === 'credit' && transaction.installments && dayActualTransaction < invoiceClosingDay && transaction.method.split('_')[1] === bank.toLocaleLowerCase()){
         const installmentAmount = transaction.total / transaction.installments;
-        total -= installmentAmount
+
+        limitSpent += transaction.total
         totalOutcome += installmentAmount
-      }else if(transaction.method.split('_')[0] === 'debit' || transaction.method.split('_')[0] === 'pix'){
-        total -= transaction.total
-        totalOutcome += transaction.total
       }
 
     }
@@ -47,13 +38,13 @@ export function filterTransactionsByYear(transactions: Transaction[], banks: Ban
       const finalDate = new Date(monthActual > 10 ? `${year}/${monthActual}/01` : `${year}/0${monthActual}/01`);
       const monthsDiff = (finalDate.getFullYear() - startDate.getFullYear()) * 12 + (finalDate.getMonth() - startDate.getMonth());
 
-      if(monthInstallmentInLoop !== monthActual && transactionInstallment.installments && monthsDiff <= transactionInstallment.installments && monthsDiff > 0){
-        total -= transactionInstallment.value / transactionInstallment.installments
+      if(monthInstallmentInLoop !== monthActual && transactionInstallment.installments && monthsDiff <= transactionInstallment.installments && monthsDiff > 0 && transactionInstallment.method.split('_')[1] === bank.toLocaleLowerCase()){
+        limitSpent += transactionInstallment.value
         totalOutcome += transactionInstallment.value / transactionInstallment.installments
       }
     }
   
-    return { total, totalIncome, totalOutcome };
+    return { limitSpent, totalOutcome };
   }
 
   function formatToArrayOfMonthsInYear(transactionsFormatedDayAndTotal: TransactionsFormatedDayAndTotal[]) {
@@ -63,10 +54,10 @@ export function filterTransactionsByYear(transactions: Transaction[], banks: Ban
       const transactionMonthAtual = transactionsFormatedDayAndTotal.filter(transaction => parseInt(transaction.date.split('/')[1]) === (month + 1));
       const totalMonth = calcTotalInMonth(transactionMonthAtual, (month + 1));
       
-      monthsArray.push({ mês: months[month], saldo: totalMonth.total, entradas: totalMonth.totalIncome, saídas: totalMonth.totalOutcome })
+      monthsArray.push({ mês: months[month], fatura: totalMonth.totalOutcome, limitSpent: totalMonth.limitSpent })
     }
 
-    return monthsArray.filter(month => month.saldo !== 0);
+    return monthsArray.filter(month => month.fatura !== 0);
   }
 
   const arrayTransactions = transactions.filter(transaction =>

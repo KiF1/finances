@@ -7,9 +7,9 @@ import { Table } from '../Table';
 import { TableMonths } from '../TableMonths';
 
 export function AnnualBalance(){
-  const { transactions, yearSelected } = useContext(ContextApplication);
-  const { balanceInTheYear, incomesInTheYear, outcomesInTheYear } = calcTotalInYear(transactions!, yearSelected)
-  const arrayTransactionsPerMonth = filterTransactionsByYear(transactions!, yearSelected)
+  const { transactions, banks, yearSelected } = useContext(ContextApplication);
+  const { balanceInTheYear, incomesInTheYear, outcomesInTheYear } = calcTotalInYear(transactions!, banks!, yearSelected)
+  const arrayTransactionsPerMonth = filterTransactionsByYear(transactions!, banks!, yearSelected)
   
   return(
     <div className="w-full flex flex-col gap-8">

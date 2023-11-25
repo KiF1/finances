@@ -16,6 +16,15 @@ export interface Transaction{
   value: number;
 }
 
+export interface Bank{
+  id: string;
+  bank: string;
+  createdAt: string;
+  date: number;
+  limit: number;
+  userId: string;
+}
+
 interface ContextType {
   user: User | null;
   yearSelected: number;
@@ -23,8 +32,17 @@ interface ContextType {
   fetchTransaction: boolean;
   transactionsInYearSelected: Transaction[] | undefined
   transactionsCollectionRef: CollectionReference<DocumentData, DocumentData>
+  banks: Bank[] | undefined;
+  bankSelected: string | undefined;
+  yearSelectedFilterBank: number;
+  fetchBank: boolean;
+  banksCollectionRef: CollectionReference<DocumentData, DocumentData>
   setYearSelected: (value: number) => void;
+  setYearSelectedFilterBank: (value: number) => void;
+  setBankSelected: (value: string) => void;
   refetchTransactions: (options?: RefetchOptions | undefined) => Promise<QueryObserverResult<Transaction[], Error>>;
+  refetchBanks: (options?: RefetchOptions | undefined) => Promise<QueryObserverResult<Bank[], Error>>;
+  productsCollectionRef: CollectionReference<DocumentData, DocumentData>
 }
 
 interface ContextProviderProps { children: ReactNode }
@@ -39,6 +57,8 @@ export function ContextProvider({ children }: ContextProviderProps) {
   const [yearSelected, setYearSelected] = useState(2023);
   
   const transactionsCollectionRef = collection(database, 'transactions');
+  const banksCollectionRef = collection(database, 'banks');
+  const productsCollectionRef = collection(database, 'products');
 
   const { data: transactions, isFetching: fetchTransaction, refetch: refetchTransactions } = useQuery<Transaction[], Error>({
     queryKey: ["transactions"],
@@ -50,8 +70,21 @@ export function ContextProvider({ children }: ContextProviderProps) {
       return filteredData;
     },
   });
-
   const transactionsInYearSelected = transactions?.filter(transaction => parseInt(transaction.createdAt.split('/')[2]) === yearSelected);
+
+  const { data: banks, isFetching: fetchBank, refetch: refetchBanks } = useQuery<Bank[], Error>({
+    queryKey: ["banks"],
+    queryFn: async () => {
+      const data = await getDocs(banksCollectionRef);
+      const filteredData = data.docs.map(doc => {
+        return { id: doc.id, ...doc.data() } as Bank;
+      }).filter(bank => bank.userId === user?.uid);
+      return filteredData;
+    },
+  });
+
+  const [bankSelected, setBankSelected] = useState<string | undefined>(undefined);
+  const [yearSelectedFilterBank, setYearSelectedFilterBank] = useState(2023);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((authUser) => {
@@ -64,7 +97,7 @@ export function ContextProvider({ children }: ContextProviderProps) {
   }, []);
 
   return (
-    <ContextApplication.Provider value={{ user, yearSelected, transactions, fetchTransaction, refetchTransactions, setYearSelected, transactionsInYearSelected, transactionsCollectionRef }}>
+    <ContextApplication.Provider value={{ user, yearSelected, transactions, fetchTransaction, refetchTransactions, setYearSelected, transactionsInYearSelected, transactionsCollectionRef, banks, bankSelected, setBankSelected, fetchBank, refetchBanks, yearSelectedFilterBank, setYearSelectedFilterBank, banksCollectionRef, productsCollectionRef }}>
       {children}
     </ContextApplication.Provider>
   );
