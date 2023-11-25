@@ -30,7 +30,7 @@ export function BanksCards(){
           <strong className="text-3xl font-medium px-4 text-white mt-4">{bank.bank}</strong>
           <strong className="text-lg font-medium px-4 text-white">Limite: {bank.limit.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</strong>
           <strong className="text-lg font-medium px-4 text-white">Limite Disponivel: {bank.limit.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</strong>
-          <strong className="text-lg font-medium px-4 text-white">Dia Vencimento Fatura: {bank.date > 10? bank.date : `0${bank.date}`}</strong>
+          <strong className="text-lg font-medium px-4 text-white">Dia Vencimento Fatura: {bank.date >= 10 ? bank.date : `0${bank.date}`}</strong>
           <div className="w-full grid grid-cols-2">
             <Dialog.Root>
               <Dialog.Trigger asChild>

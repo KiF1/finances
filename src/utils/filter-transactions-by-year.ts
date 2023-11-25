@@ -44,7 +44,7 @@ export function filterTransactionsByYear(transactions: Transaction[], banks: Ban
       const yearInstallmentInLoop = parseInt(transactionInstallment.createdAt.split('/')[2]);
 
       const startDate = new Date(new Date(`${yearInstallmentInLoop}/${monthInstallmentInLoop}/01`)) 
-      const finalDate = new Date(monthActual > 10 ? `${year}/${monthActual}/01` : `${year}/0${monthActual}/01`);
+      const finalDate = new Date(monthActual >= 10 ? `${year}/${monthActual}/01` : `${year}/0${monthActual}/01`);
       const monthsDiff = (finalDate.getFullYear() - startDate.getFullYear()) * 12 + (finalDate.getMonth() - startDate.getMonth());
 
       if(monthInstallmentInLoop !== monthActual && transactionInstallment.installments && monthsDiff <= transactionInstallment.installments && monthsDiff > 0){
