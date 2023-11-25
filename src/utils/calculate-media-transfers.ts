@@ -25,12 +25,19 @@ export function calculateMediaTransfersInYear(transactions: Transaction[], banks
     totalMonthsOutcome += month.saídas
   }
 
-  const mediaTotalIncomeInYear = totalMonthsIncome / totalInMonths.length;
-  const mediaTotalOutcomeInYear = totalMonthsOutcome / totalInMonths.length;
+  const mediaTotalIncomeInYearCalc = totalMonthsIncome / totalInMonths.length;
+  const mediaTotalIncomeInYear = Number.isNaN(mediaTotalIncomeInYearCalc) ? 0 : mediaTotalIncomeInYearCalc;
+
+  const mediaTotalOutcomeInYearCalc = totalMonthsOutcome / totalInMonths.length;
+  const mediaTotalOutcomeInYear = Number.isNaN(mediaTotalOutcomeInYearCalc) ? 0 : mediaTotalOutcomeInYearCalc;
+
   const totalReserveInSixMonths = mediaTotalOutcomeInYear * 6;
-  const percentageCompletedInSixMonths = Math.floor((saldoTotal * 100) / totalReserveInSixMonths);
+  const percentageCompletedInSixMonthsCalc = Math.floor((saldoTotal * 100) / totalReserveInSixMonths);
+  const percentageCompletedInSixMonths = Number.isNaN(percentageCompletedInSixMonthsCalc) ? 100 : percentageCompletedInSixMonthsCalc;
+
   const totalReserveInTwelveMonths = mediaTotalOutcomeInYear * 12;
-  const percentageCompletedInTwelveMonths = Math.floor((saldoTotal * 100) / totalReserveInTwelveMonths);
+  const percentageCompletedInTwelveMonthsCalc = Math.floor((saldoTotal * 100) / totalReserveInTwelveMonths);
+  const percentageCompletedInTwelveMonths = Number.isNaN(percentageCompletedInTwelveMonthsCalc) ? 100 : percentageCompletedInTwelveMonthsCalc;
 
   return { mediaTotalIncomeInYear, mediaTotalOutcomeInYear, totalReserveInSixMonths, percentageCompletedInSixMonths, totalReserveInTwelveMonths, percentageCompletedInTwelveMonths }
 }

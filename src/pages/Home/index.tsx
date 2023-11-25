@@ -50,7 +50,7 @@ export function Home(){
       {!fetchTransaction && !fetchBank && arrayTransactionsPerMonth!.length >= 1 ? (
         <AnnualBalance />
       ) : !fetchTransaction && !fetchBank && arrayTransactionsPerMonth!.length === 0 ? (
-        <strong className="text-xl font-medium text-white">Não existe transações no ano selecionado!</strong>
+        <strong className="text-xl font-medium text-white">Cadastre um banco e realize transações para poder ter acesso as informações!</strong>
       ) : (
         <div className="w-full h-[70vh] flex items-center justify-center">
           <ReactLoading
