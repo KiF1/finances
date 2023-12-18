@@ -1,12 +1,9 @@
-import { Bank, Transaction } from "../context/ContextApplication";
-import { filterTransactionsByYear } from "./filter-transactions-by-year";
-
+import { ArrayTransactionsPerMonthInYear } from "../pages/Home";
 export interface TransactionsFormatedTotal{
   total: number;
   type: string;
 }
-export function calcTotalInYear(transactions: Transaction[], banks: Bank[], yearSelected: number){
-  const arrayTransactionsPerMonth = filterTransactionsByYear(transactions!, banks!, yearSelected);
+export function calcTotalInYear(arrayTransactionsPerMonth: ArrayTransactionsPerMonthInYear[]){
 
   let balanceInTheYear = 0;
   let incomesInTheYear = 0;
@@ -18,5 +15,9 @@ export function calcTotalInYear(transactions: Transaction[], banks: Bank[], year
     outcomesInTheYear += month.saídas
   }
 
-  return { balanceInTheYear, incomesInTheYear, outcomesInTheYear };
+  return { 
+    balanceInTheYear: balanceInTheYear.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }), 
+    incomesInTheYear: incomesInTheYear.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }), 
+    outcomesInTheYear: outcomesInTheYear.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) 
+  };
 }

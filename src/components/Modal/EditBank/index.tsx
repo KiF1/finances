@@ -4,8 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { X } from "phosphor-react";
-import { useContext } from "react";
-import { ContextApplication } from "../../../context/ContextApplication";
 import { doc, updateDoc } from "firebase/firestore";
 import { Toast } from "../../Toast";
 import { database } from "../../../lib/firebase";
@@ -23,7 +21,6 @@ const bankFormSchema = z.object({
 type BankFormInputs = z.infer<typeof bankFormSchema>;
 
 export function EditBank({ id }: Props){
-  const { refetchBanks } = useContext(ContextApplication)
   const {
     register,
     handleSubmit,
@@ -39,7 +36,6 @@ export function EditBank({ id }: Props){
       await updateDoc(bankDoc, data);
       await toast.success(`Os dados foram atualizados sucesso!`)
       await reset();
-      await refetchBanks();
     } catch {
       toast.error('Erro ao atualizar os dados!')
     }

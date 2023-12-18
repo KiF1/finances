@@ -35,7 +35,7 @@ export function FilterBankModal() {
             <select onChange={(e) => setBankSelectedToFilter(e.target.value)} className='w-full bg-gray-700 text-white text-sm p-3 rounded-lg'>
                 <option value="">Escolha o Banco</option>
                 {banks!.map(bank => (
-                  <option value={bank.bank}>{bank.bank}</option>
+                  <option key={bank.id} value={bank.bank}>{bank.bank}</option>
                 ))}
             </select>
             <button

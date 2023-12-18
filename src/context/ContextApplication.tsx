@@ -1,8 +1,8 @@
 import { ReactNode, useEffect, useState, createContext } from "react";
 import { auth, database } from "../lib/firebase";
 import { User } from "firebase/auth";
-import { QueryObserverResult, RefetchOptions, useQuery } from "@tanstack/react-query";
-import { CollectionReference, DocumentData, collection, getDocs } from "firebase/firestore";
+import { useQuery } from "@tanstack/react-query";
+import { CollectionReference, DocumentData, collection, getDocs, query, where } from "firebase/firestore";
 
 export interface Transaction{
   id: string;
@@ -30,7 +30,6 @@ interface ContextType {
   yearSelected: number;
   transactions: Transaction[] | undefined;
   fetchTransaction: boolean;
-  transactionsInYearSelected: Transaction[] | undefined
   transactionsCollectionRef: CollectionReference<DocumentData, DocumentData>
   banks: Bank[] | undefined;
   bankSelected: string | undefined;
@@ -40,8 +39,6 @@ interface ContextType {
   setYearSelected: (value: number) => void;
   setYearSelectedFilterBank: (value: number) => void;
   setBankSelected: (value: string) => void;
-  refetchTransactions: (options?: RefetchOptions | undefined) => Promise<QueryObserverResult<Transaction[], Error>>;
-  refetchBanks: (options?: RefetchOptions | undefined) => Promise<QueryObserverResult<Bank[], Error>>;
   productsCollectionRef: CollectionReference<DocumentData, DocumentData>
 }
 
@@ -55,24 +52,27 @@ export function ContextProvider({ children }: ContextProviderProps) {
 
   const [user, setUser] = useState<User | null>(initialUser);
   const [yearSelected, setYearSelected] = useState(2023);
+  const [bankSelected, setBankSelected] = useState<string | undefined>(undefined);
+  const [yearSelectedFilterBank, setYearSelectedFilterBank] = useState(2023);
   
   const transactionsCollectionRef = collection(database, 'transactions');
   const banksCollectionRef = collection(database, 'banks');
   const productsCollectionRef = collection(database, 'products');
 
-  const { data: transactions, isFetching: fetchTransaction, refetch: refetchTransactions } = useQuery<Transaction[], Error>({
+  const { data: transactions, isFetching: fetchTransaction } = useQuery<Transaction[], Error>({
     queryKey: ["transactions"],
     queryFn: async () => {
-      const data = await getDocs(transactionsCollectionRef);
+      const queryTransactions = await query(transactionsCollectionRef, where('createdAt', '>=' ,`01/01/${yearSelected}`), where('createdAt', '<=' ,`31/12/${yearSelected}`));
+      const data = await getDocs(queryTransactions);
+
       const filteredData = data.docs.map(doc => {
         return { id: doc.id, ...doc.data() } as Transaction;
-      }).filter(transaction => transaction.userId === user?.uid);
+      })
       return filteredData;
     },
   });
-  const transactionsInYearSelected = transactions?.filter(transaction => parseInt(transaction.createdAt.split('/')[2]) === yearSelected);
 
-  const { data: banks, isFetching: fetchBank, refetch: refetchBanks } = useQuery<Bank[], Error>({
+  const { data: banks, isFetching: fetchBank } = useQuery<Bank[], Error>({
     queryKey: ["banks"],
     queryFn: async () => {
       const data = await getDocs(banksCollectionRef);
@@ -82,9 +82,6 @@ export function ContextProvider({ children }: ContextProviderProps) {
       return filteredData;
     },
   });
-
-  const [bankSelected, setBankSelected] = useState<string | undefined>(undefined);
-  const [yearSelectedFilterBank, setYearSelectedFilterBank] = useState(2023);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((authUser) => {
@@ -97,7 +94,7 @@ export function ContextProvider({ children }: ContextProviderProps) {
   }, []);
 
   return (
-    <ContextApplication.Provider value={{ user, yearSelected, transactions, fetchTransaction, refetchTransactions, setYearSelected, transactionsInYearSelected, transactionsCollectionRef, banks, bankSelected, setBankSelected, fetchBank, refetchBanks, yearSelectedFilterBank, setYearSelectedFilterBank, banksCollectionRef, productsCollectionRef }}>
+    <ContextApplication.Provider value={{ user, yearSelected, transactions, fetchTransaction,  setYearSelected, transactionsCollectionRef, banks, bankSelected, setBankSelected, fetchBank, yearSelectedFilterBank, setYearSelectedFilterBank, banksCollectionRef, productsCollectionRef }}>
       {children}
     </ContextApplication.Provider>
   );

@@ -8,7 +8,7 @@ export interface TransactionsFormatedDayAndTotal{
   installments: number | undefined;
 }
 
-export function filterTransactionsByYear(transactions: Transaction[], banks: Bank[], year: number){
+export function filterTransactionsByYear(transactions: Transaction[], banks: Bank[], yearSelected: number){
   const months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho','Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
   const transactionsInstallments = transactions.filter(transaction => transaction.method.split('_')[0] === 'credit');
 
@@ -16,35 +16,35 @@ export function filterTransactionsByYear(transactions: Transaction[], banks: Ban
     let total = 0;
     let totalIncome = 0;
     let totalOutcome = 0;
-
     
     for (let transaction of transactionsFormatedDayAndTotal) {
       const bankTransaction = transaction.method.split('_')[1].toLocaleLowerCase();
       const dateBank = banks!.find(bank => bank.bank.toLocaleLowerCase() === bankTransaction)!.date;
-
+      
       const invoiceClosingDay = dateBank;
       const dayActualTransaction = parseInt(transaction.date.split('/')[0])
+      const methodPayment = transaction.method.split('_')[0]
 
       if(transaction.type === 'income'){
         total += transaction.total;
         totalIncome += transaction.total;
-      }else if(transaction.method.split('_')[0] === 'credit' && transaction.installments && dayActualTransaction < invoiceClosingDay){
+      }else if(methodPayment === 'credit' && transaction.installments && dayActualTransaction < invoiceClosingDay){
         const installmentAmount = transaction.total / transaction.installments;
         total -= installmentAmount
         totalOutcome += installmentAmount
-      }else if(transaction.method.split('_')[0] === 'debit' || transaction.method.split('_')[0] === 'pix'){
+      }else if(methodPayment === 'debit' || methodPayment === 'pix'){
         total -= transaction.total
         totalOutcome += transaction.total
       }
 
     }
 
-    for(let transactionInstallment of transactionsInstallments){
+    for(let transactionInstallment of transactionsInstallments!){
       const monthInstallmentInLoop = parseInt(transactionInstallment.createdAt.split('/')[1]);
       const yearInstallmentInLoop = parseInt(transactionInstallment.createdAt.split('/')[2]);
 
       const startDate = new Date(new Date(`${yearInstallmentInLoop}/${monthInstallmentInLoop}/01`)) 
-      const finalDate = new Date(monthActual >= 10 ? `${year}/${monthActual}/01` : `${year}/0${monthActual}/01`);
+      const finalDate = new Date(monthActual >= 10 ? `${yearSelected}/${monthActual}/01` : `${yearSelected}/0${monthActual}/01`);
       const monthsDiff = (finalDate.getFullYear() - startDate.getFullYear()) * 12 + (finalDate.getMonth() - startDate.getMonth());
 
       if(monthInstallmentInLoop !== monthActual && transactionInstallment.installments && monthsDiff <= transactionInstallment.installments && monthsDiff > 0){
@@ -69,11 +69,9 @@ export function filterTransactionsByYear(transactions: Transaction[], banks: Ban
     return monthsArray.filter(month => month.saldo !== 0);
   }
 
-  const arrayTransactions = transactions.filter(transaction =>
-    transaction.createdAt.split('/')[2] === String(year)
-  ).map(transaction => {
+  const arrayTransactions = transactions.map(transaction => {
     return { date: transaction.createdAt, total: transaction.value, type: transaction.type, method: transaction.method, installments: transaction.installments }
   });
 
-  return formatToArrayOfMonthsInYear(arrayTransactions)
+  return formatToArrayOfMonthsInYear(arrayTransactions!)
 }

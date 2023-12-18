@@ -1,30 +1,36 @@
-import { useContext } from 'react';
+import { memo, useContext, useMemo } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Rectangle } from 'recharts';
 import { ContextApplication } from '../../context/ContextApplication';
 import { calcTotalInYear } from '../../utils/calc-total-in-year';
-import { filterTransactionsByYear } from '../../utils/filter-transactions-by-year';
 import { Table } from '../Table';
 import { TableMonths } from '../TableMonths';
+import { ArrayTransactionsPerMonthInYear } from '../../pages/Home';
 
-export function AnnualBalance(){
-  const { transactions, banks, yearSelected } = useContext(ContextApplication);
-  const { balanceInTheYear, incomesInTheYear, outcomesInTheYear } = calcTotalInYear(transactions!, banks!, yearSelected)
-  const arrayTransactionsPerMonth = filterTransactionsByYear(transactions!, banks!, yearSelected)
+interface Props{
+  arrayTransactionsPerMonth: ArrayTransactionsPerMonthInYear[]
+}
+
+export function AnnualBalanceComponent({ arrayTransactionsPerMonth }: Props){
+  const { yearSelected } = useContext(ContextApplication);
+  
+  const { balanceInTheYear, incomesInTheYear, outcomesInTheYear } = useMemo(() => {
+    return calcTotalInYear(arrayTransactionsPerMonth)
+  }, [arrayTransactionsPerMonth])
   
   return(
     <div className="w-full flex flex-col gap-8">
       <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-8">
         <div className="w-full bg-gray-700 rounded-lg p-8 flex flex-col gap-4">
           <strong className="text-base font-medium text-white">Entradas</strong>
-          <strong className="text-4xl font-bold text-white">{incomesInTheYear.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</strong>
+          <strong className="text-4xl font-bold text-white">{incomesInTheYear}</strong>
         </div>
         <div className="w-full bg-gray-700 rounded-lg p-8 flex flex-col gap-4">
           <strong className="text-base font-medium text-white">Saídas</strong>
-          <strong className="text-4xl font-bold text-white">{outcomesInTheYear.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</strong>
+          <strong className="text-4xl font-bold text-white">{outcomesInTheYear}</strong>
         </div>
         <div className="w-full bg-gray-700 rounded-lg p-8 flex flex-col gap-4">
           <strong className="text-base font-medium text-white">Saldo</strong>
-          <strong className="text-4xl font-bold text-white">{balanceInTheYear.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</strong>
+          <strong className="text-4xl font-bold text-white">{balanceInTheYear}</strong>
         </div>
       </div>
       <div className='w-full flex flex-col gap-8 bg-gray-700 rounded-lg p-8'>
@@ -66,3 +72,7 @@ export function AnnualBalance(){
     </div>
   )
 }
+
+export const AnnualBalance = memo(AnnualBalanceComponent, (prevProps, nextProps) => {
+  return Object.is(prevProps.arrayTransactionsPerMonth, nextProps.arrayTransactionsPerMonth)
+})
