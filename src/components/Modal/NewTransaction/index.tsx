@@ -88,7 +88,7 @@ export function NewTransactionModal() {
     <Dialog.Portal>
       <Toast />
       <div className="fixed z-[200] w-full h-full inset-0 bg-black bg-opacity-75">
-        <div className="w-[85%] md:w-[35%] p-10 mx-auto bg-gray-800 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-md h-[400px]">
+        <div className="w-[85%] md:w-[65%] lg:w-[35%] p-10 mx-auto bg-gray-800 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-md h-[400px]">
           <div className="overflow-y-scroll h-[300px] mt-8 pl-2 pr-8">
             <Dialog.Title className="text-white">Nova Transação</Dialog.Title>
             <Dialog.Close className="absolute top-6 right-6 bg-transparent border-0 cursor-pointer text-gray-600">
@@ -134,10 +134,10 @@ export function NewTransactionModal() {
                 {...register("createdAt", { required: true })}
               />
               {banks !== undefined && (
-                <select {...register("method")} className='w-full bg-gray-700 text-white text-sm p-3 rounded-lg'>
+                <select {...register("bank")} className='w-full bg-gray-700 text-white text-sm p-3 rounded-lg'>
                   <option value="">Escolha o Banco</option>
                   {banks.map(bank => (
-                      <option key={bank.id} value={`pix_${bank.bank.toLocaleLowerCase()}`}>{bank.bank}</option>
+                      <option key={bank.id} value={`${bank.bank.toLocaleLowerCase()}`}>{bank.bank}</option>
                   ))}
                 </select>
               )}

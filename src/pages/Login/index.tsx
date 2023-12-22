@@ -30,7 +30,7 @@ export function Login(){
   return(
     <div className="w-full h-screen flex p-4">
       <img src={LoginBanner} className='hidden sm:block w-[40%] rounded-md object-cover h-full' />
-      <div className='w-[85%] md:w-[35%] lg:w-[20%] flex flex-col m-auto'>
+      <div className='w-[85%] md:w-[65%] lg:w-[35%]lg:w-[20%] flex flex-col m-auto'>
         <strong className='font-semibold text-white text-2xl'>Boas Vindas!</strong>
         <span className='font-normal text-gray-50 text-xs'>Faça seu login</span>
         <div className='mt-8 flex flex-col gap-4'>

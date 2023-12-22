@@ -58,7 +58,7 @@ export function BankModal(){
     <Dialog.Portal>
       <Toast />
       <div className="fixed z-[200] w-full h-full inset-0 bg-black bg-opacity-75">
-        <div className="w-[85%] md:w-[35%] p-10 mx-auto bg-gray-800 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-md h-[400px]">
+        <div className="w-[85%] md:w-[65%] lg:w-[35%] p-10 mx-auto bg-gray-800 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-md h-[400px]">
           <div className="overflow-y-scroll h-[300px] mt-8 pr-4">
             <Dialog.Title className="text-white">Adicione o Banco</Dialog.Title>
             <Dialog.Close className="absolute top-6 right-6 bg-transparent border-0 cursor-pointer text-gray-600">
@@ -75,16 +75,22 @@ export function BankModal(){
                 {...register("bank")}
                 className="w-full p-3 rounded-lg bg-gray-700 text-white placeholder-white"
               />
+              <div>
+                <div className="relative rounded-md shadow-sm">
+                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                    <span className="text-white sm:text-sm">R$</span>
+                  </div>
+                  <input 
+                    type="number"  
+                    placeholder="0,00" 
+                    required
+                    {...register("limit", { valueAsNumber: true })} 
+                    className="w-full p-3 rounded-lg bg-gray-700 text-white placeholder-white pl-8" />
+                </div>
+              </div>
               <input
-                type="text"
-                placeholder="Informe o limite de crédito"
-                required
-                {...register("limit", { valueAsNumber: true })}
-                className="w-full p-3 rounded-lg bg-gray-700 text-white placeholder-white"
-              />
-              <input
-                type="text"
-                placeholder="Informe a data de vencimento da fatura"
+                type="number"
+                placeholder="Informe o dia de vencimento da fatura"
                 required
                 {...register("date", { valueAsNumber: true })}
                 className="w-full p-3 rounded-lg bg-gray-700 text-white placeholder-white"

@@ -54,7 +54,7 @@ export function EditBank({ id }: Props){
     <Dialog.Portal>
       <Toast />
       <div className="fixed z-[200] w-full h-full inset-0 bg-black bg-opacity-75">
-        <div className="w-[85%] md:w-[35%] mx-auto p-10 bg-gray-800 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-md">
+        <div className="w-[85%] md:w-[65%] lg:w-[35%] mx-auto p-10 bg-gray-800 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-md">
           <Dialog.Title className="text-white">Editar Banco</Dialog.Title>
           <Dialog.Close className="absolute top-6 right-6 bg-transparent border-0 cursor-pointer text-gray-600">
             <X size={24} />
