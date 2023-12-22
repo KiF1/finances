@@ -2,7 +2,6 @@ import { memo, useContext, useMemo } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Rectangle, AreaChart, Area } from 'recharts';
 import { ContextApplication } from '../../context/ContextApplication';
 import { calcTotalInYear } from '../../utils/calc-total-in-year';
-import { Table } from '../Table';
 import { TableMonths } from '../TableMonths';
 import { ArrayTransactionsPerMonthInYear } from '../../pages/Home';
 import { CustomTooltip } from '../CustomTooltip';
@@ -71,7 +70,6 @@ export function AnnualBalanceComponent({ arrayTransactionsPerMonth }: Props){
           <TableMonths arrayTransactionsPerMonth={arrayTransactionsPerMonth!} />
         </div>
       </div>
-      <Table />
     </div>
   )
 }
