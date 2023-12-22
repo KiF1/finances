@@ -179,9 +179,9 @@ export function NewTransactionModal() {
                 </button>
               </div>
               <button
-                disabled={isPending}
+                disabled={isPending || banks?.length === 0}
                 type="submit"
-                className="w-full mt-6 h-14 bg-gray-700 text-white font-bold px-5 rounded-lg cursor-pointer hover:bg-gray-600 transition duration-200 flex justify-center items-center"
+                className="w-full mt-6 h-14 bg-gray-700 text-white font-bold px-5 rounded-lg cursor-pointer hover:bg-gray-600 transition duration-200 flex justify-center items-center disabled:cursor-not-allowed"
               >
                 {!isPending ? 'Adicionar' : <ReactLoading className="w-fit" type="spinningBubbles" color="#ffffff" height="23px" width="23px"/>}
               </button>

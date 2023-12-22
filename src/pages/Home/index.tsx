@@ -39,7 +39,7 @@ export function Home(){
         <Dialog.Root>
           <Dialog.Trigger asChild>
             <button className="w-fit h-fit border-0 bg-gray-700 px-4 py-2 rounded-lg cursor-pointer flex justify-center items-center gap-2 hover:bg-gray-600">
-              <CurrencyDollarSimple className="w-5 h-5" size={20} color="white" />
+              <CurrencyDollarSimple className="w-5 h-6" size={20} color="white" />
             </button>
           </Dialog.Trigger>
           <NewTransactionModal />

@@ -78,7 +78,7 @@ useEffect(() => {
             <TableMui />
           </>
       ) : (
-        <strong className="text-xl font-medium text-white">Selecione Um Banco com transações realizadas!</strong>
+        <strong className="text-xl font-medium text-white">Selecione um banco com transações realizadas para vizualizar os dados!</strong>
       )}
     </div>
   )

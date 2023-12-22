@@ -57,7 +57,11 @@ export function Planning(){
               </Dialog.Root>
             </div>
           </div>
-          <Products products={products!} />
+          {products!.length >= 1 ? (
+            <Products products={products!} />
+            ) : (
+            <strong className="text-xl font-medium text-white">Adicione os produtos que planeja comprar para vizualizar o avanço das compras!</strong>
+          )}
         </>
       ) : (
         <div className="w-full h-[70vh] flex items-center justify-center">
