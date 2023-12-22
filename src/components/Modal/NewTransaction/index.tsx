@@ -89,7 +89,7 @@ export function NewTransactionModal() {
       <Toast />
       <div className="fixed z-[200] w-full h-full inset-0 bg-black bg-opacity-75">
         <div className="w-[85%] md:w-[35%] p-10 mx-auto bg-gray-800 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-md h-[400px]">
-          <div className="overflow-y-scroll h-[300px] mt-8 pr-4">
+          <div className="overflow-y-scroll h-[300px] mt-8 pl-2 pr-8">
             <Dialog.Title className="text-white">Nova Transação</Dialog.Title>
             <Dialog.Close className="absolute top-6 right-6 bg-transparent border-0 cursor-pointer text-gray-600">
               <X size={24} />
@@ -112,19 +112,25 @@ export function NewTransactionModal() {
                 {...register("category")}
                 className="w-full p-3 rounded-lg bg-gray-700 text-white placeholder-white"
               />
-              <input
-                type="number"
-                placeholder="Valor"
-                required
-                {...register("value", { valueAsNumber: true })}
-                className="w-full p-3 rounded-lg bg-gray-700 text-white placeholder-white"
-              />
+              <div>
+                <div className="relative rounded-md shadow-sm">
+                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                    <span className="text-white sm:text-sm">R$</span>
+                  </div>
+                  <input 
+                    type="number"  
+                    placeholder="0,00" 
+                    required
+                    {...register("value", { valueAsNumber: true })} 
+                    className="w-full p-3 rounded-lg bg-gray-700 text-white placeholder-white pl-8" />
+                </div>
+              </div>
               <InputMask
                 mask={"99/99/9999"}
                 className="w-full p-3 rounded-lg bg-gray-700 text-white placeholder-white"
                 alwaysShowMask={false}
                 type={'text'}
-                placeholder="Insira a Data da Transação"
+                placeholder="Data da Transação"
                 {...register("createdAt", { required: true })}
               />
               {banks !== undefined && (
