@@ -69,13 +69,19 @@ export function NewPurchase(){
               {...register("product")}
               className="w-full p-3 rounded-lg bg-gray-700 text-white placeholder-white"
             />
-            <input
-              type="number"
-              placeholder="Informe o preço do produto"
-              required
-              {...register("price", { valueAsNumber: true }) }
-              className="w-full p-3 rounded-lg bg-gray-700 text-white placeholder-white"
-            />
+            <div>
+                <div className="relative rounded-md shadow-sm">
+                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                    <span className="text-white sm:text-sm">R$</span>
+                  </div>
+                  <input 
+                    type="number"  
+                    placeholder="0,00" 
+                    required
+                    {...register("price", { valueAsNumber: true })} 
+                    className="w-full p-3 rounded-lg bg-gray-700 text-white placeholder-white pl-8" />
+                </div>
+              </div>
             <button
               disabled={isPending}
               type="submit"
