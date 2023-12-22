@@ -26,18 +26,29 @@ export function calculateMediaTransfersInYear(transactions: Transaction[], banks
   }
 
   const mediaTotalIncomeInYearCalc = totalMonthsIncome / totalInMonths.length;
-  const mediaTotalIncomeInYear = Number.isNaN(mediaTotalIncomeInYearCalc) ? 0 : mediaTotalIncomeInYearCalc;
+  const mediaTotalIncomeInYear = Number.isNaN(mediaTotalIncomeInYearCalc) ? 0 : mediaTotalIncomeInYearCalc.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
   const mediaTotalOutcomeInYearCalc = totalMonthsOutcome / totalInMonths.length;
   const mediaTotalOutcomeInYear = Number.isNaN(mediaTotalOutcomeInYearCalc) ? 0 : mediaTotalOutcomeInYearCalc;
+  const mediaTotalOutcomeFormatted = mediaTotalOutcomeInYear.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
 
   const totalReserveInSixMonths = mediaTotalOutcomeInYear * 6;
+  const totalReserveInSixMonthsFormatted = totalReserveInSixMonths.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
   const percentageCompletedInSixMonthsCalc = Math.floor((saldoTotal * 100) / totalReserveInSixMonths);
-  const percentageCompletedInSixMonths = Number.isNaN(percentageCompletedInSixMonthsCalc) ? 100 : percentageCompletedInSixMonthsCalc;
+  const percentageCompletedInSixMonths = percentageCompletedInSixMonthsCalc >= 0 ? percentageCompletedInSixMonthsCalc : 0;
 
   const totalReserveInTwelveMonths = mediaTotalOutcomeInYear * 12;
-  const percentageCompletedInTwelveMonthsCalc = Math.floor((saldoTotal * 100) / totalReserveInTwelveMonths);
-  const percentageCompletedInTwelveMonths = Number.isNaN(percentageCompletedInTwelveMonthsCalc) ? 100 : percentageCompletedInTwelveMonthsCalc;
+  const totalReserveInTwelveMonthsFormatted = totalReserveInTwelveMonths.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
-  return { mediaTotalIncomeInYear, mediaTotalOutcomeInYear, totalReserveInSixMonths, percentageCompletedInSixMonths, totalReserveInTwelveMonths, percentageCompletedInTwelveMonths }
+  const percentageCompletedInTwelveMonthsCalc = Math.floor((saldoTotal * 100) / totalReserveInTwelveMonths);
+  const percentageCompletedInTwelveMonths = percentageCompletedInTwelveMonthsCalc >= 0 ? percentageCompletedInTwelveMonthsCalc : 0;
+
+  return { 
+    mediaTotalIncomeInYear, 
+    mediaTotalOutcomeInYear: mediaTotalOutcomeFormatted, 
+    totalReserveInSixMonths: totalReserveInSixMonthsFormatted, 
+    percentageCompletedInSixMonths, 
+    totalReserveInTwelveMonths: totalReserveInTwelveMonthsFormatted, 
+    percentageCompletedInTwelveMonths }
 }
