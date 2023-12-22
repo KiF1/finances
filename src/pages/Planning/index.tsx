@@ -18,7 +18,7 @@ export interface Product{
 }
 
 export function Planning(){
-  const { user, fetchTransaction, fetchBank, productsCollectionRef } = useContext(ContextApplication);
+  const { user, fetchTransaction, fetchBank, productsCollectionRef, transactions } = useContext(ContextApplication);
   
   const { data: products, isFetching: fetchProducts } = useQuery<Product[], Error>({
     queryKey: ["products"],
@@ -33,14 +33,18 @@ export function Planning(){
   
   return(
     <div className="w-full flex flex-col gap-8">
-      <div className="w-full flex items-center gap-2">
-        <Calendar color="#ffffff" size={24} />
-        <h1 className="text-base font-medium text-white">Planejamento - Reserva</h1>
-        <img src={user?.photoURL!} className="w-8 h-8 rounded-full ml-auto" />
-      </div>
       {!fetchTransaction && !fetchProducts && !fetchBank ? (
         <>
-          <ReservationPlanning />
+        {transactions!.length >= 3 && (
+          <>
+            <div className="w-full flex items-center gap-2">
+              <Calendar color="#ffffff" size={24} />
+              <h1 className="text-base font-medium text-white">Planejamento - Reserva</h1>
+              <img src={user?.photoURL!} className="w-8 h-8 rounded-full ml-auto" />
+            </div>
+            <ReservationPlanning />
+          </>
+          )}
           <div className="w-full flex flex-col sm:flex-row items-center justify-between sm:justify-start">
             <div className="w-full flex items-center gap-2">
               <ShoppingBag color="#ffffff" size={24} />
@@ -58,7 +62,7 @@ export function Planning(){
             </div>
           </div>
           {products!.length >= 1 ? (
-            <Products products={products!} />
+              <Products products={products!} />
             ) : (
             <strong className="text-xl font-medium text-white">Adicione os produtos que planeja comprar para vizualizar o avanço das compras!</strong>
           )}

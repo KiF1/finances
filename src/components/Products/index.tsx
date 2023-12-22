@@ -17,7 +17,7 @@ export function Products({ products }: Props){
   const totalSald = calculeSaldTotal();
 
   const productsMaped = products.map(product => {
-    const totalComplete = (totalSald * 100) / product.price
+   const totalComplete = Math.floor((totalSald * 100) / product.price)
    const percentageComplete = totalComplete >= 0 ? totalComplete : 0;
 
    return { 
@@ -35,7 +35,7 @@ export function Products({ products }: Props){
    },
    onSuccess: () => {
      toast.success(`Produto deletado com sucesso!`);
-     queryClient.invalidateQueries({ queryKey: ["banks"] });
+     queryClient.invalidateQueries({ queryKey: ["products"] });
    },
    onError: () => {
      toast.error('Erro ao deletar Produto!');
@@ -54,7 +54,7 @@ export function Products({ products }: Props){
             <strong className="text-lg font-medium text-white">Data: {product.date}</strong>
             <div className="w-full bg-gray-600 rounded-full">
               <div 
-              style={{ width: product.percentageComplete >= 100 ? '100%' : product.percentageComplete !== 0 ? `${product.percentageComplete}` : '50%' }} 
+              style={{ width: product.percentageComplete >= 100 ? '100%' : product.percentageComplete !== 0 ? `${product.percentageComplete}%` : '50%' }} 
               className="bg-gray-500 text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full">
                 {product.percentageComplete >= 100 ? '100%' : `${product.percentageComplete}%`}
               </div>

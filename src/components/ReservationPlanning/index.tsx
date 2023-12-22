@@ -21,7 +21,7 @@ export function ReservationPlanning(){
         <strong className="text-3xl font-bold text-white">{totalReserveInSixMonths}</strong>
         <div className="w-full bg-gray-600 rounded-full">
           <div 
-            style={{ width: percentageCompletedInSixMonths >= 100 ? '100%' : percentageCompletedInSixMonths !== 0 ? `${percentageCompletedInSixMonths}` : '50%' }} 
+            style={{ width: percentageCompletedInSixMonths >= 100 ? '100%' : percentageCompletedInSixMonths !== 0 ? `${percentageCompletedInSixMonths}%` : '50%' }} 
             className="bg-gray-500 text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full">
               {percentageCompletedInSixMonths >= 100 ? '100%' : `${percentageCompletedInSixMonths}%`}
           </div>
@@ -32,7 +32,7 @@ export function ReservationPlanning(){
         <strong className="text-3xl font-bold text-white">{totalReserveInTwelveMonths}</strong>
         <div className="w-full bg-gray-600 rounded-full">
           <div 
-          style={{ width: percentageCompletedInTwelveMonths >= 100 ? '100%' : percentageCompletedInTwelveMonths !== 0 ? `${percentageCompletedInTwelveMonths}` : '50%' }} 
+          style={{ width: percentageCompletedInTwelveMonths >= 100 ? '100%' : percentageCompletedInTwelveMonths !== 0 ? `${percentageCompletedInTwelveMonths}%` : '50%' }} 
           className="bg-gray-500 text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full">
             {percentageCompletedInTwelveMonths >= 100 ? '100%' : `${percentageCompletedInSixMonths}%`}
           </div>
