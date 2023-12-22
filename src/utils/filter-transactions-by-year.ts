@@ -5,12 +5,13 @@ export interface TransactionsFormatedDayAndTotal{
   total: number;
   type: string;
   method: string;
+  bank: string;
   installments: number | undefined;
 }
 
 export function filterTransactionsByYear(transactions: Transaction[], banks: Bank[], yearSelected: number){
   const months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho','Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
-  const transactionsInstallments = transactions.filter(transaction => transaction.method.split('_')[0] === 'credit');
+  const transactionsInstallments = transactions.filter(transaction => transaction.method === 'credit');
 
   function calcTotalInMonth(transactionsFormatedDayAndTotal: TransactionsFormatedDayAndTotal[], monthActual: number) {
     let total = 0;
@@ -18,12 +19,12 @@ export function filterTransactionsByYear(transactions: Transaction[], banks: Ban
     let totalOutcome = 0;
     
     for (let transaction of transactionsFormatedDayAndTotal) {
-      const bankTransaction = transaction.method.split('_')[1].toLocaleLowerCase();
+      const bankTransaction = transaction.bank.toLocaleLowerCase();
       const dateBank = banks!.find(bank => bank.bank.toLocaleLowerCase() === bankTransaction)!.date;
       
       const invoiceClosingDay = dateBank;
       const dayActualTransaction = parseInt(transaction.date.split('/')[0])
-      const methodPayment = transaction.method.split('_')[0]
+      const methodPayment = transaction.method
 
       if(transaction.type === 'income'){
         total += transaction.total;
@@ -52,7 +53,7 @@ export function filterTransactionsByYear(transactions: Transaction[], banks: Ban
         totalOutcome += transactionInstallment.value / transactionInstallment.installments
       }
     }
-  
+
     return { total, totalIncome, totalOutcome };
   }
 
@@ -70,7 +71,7 @@ export function filterTransactionsByYear(transactions: Transaction[], banks: Ban
   }
 
   const arrayTransactions = transactions.map(transaction => {
-    return { date: transaction.createdAt, total: transaction.value, type: transaction.type, method: transaction.method, installments: transaction.installments }
+    return { date: transaction.createdAt, total: transaction.value, type: transaction.type, method: transaction.method, installments: transaction.installments, bank: transaction.bank }
   });
 
   return formatToArrayOfMonthsInYear(arrayTransactions!)

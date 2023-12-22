@@ -12,8 +12,16 @@ import ReactLoading from "react-loading";
 
 export function BanksCards(){
   const { banks } = useContext(ContextApplication);
-
   const queryClient = useQueryClient();
+
+  const banksArray = banks?.map(bank => {
+    return {
+      id: bank.id,
+      name: bank.bank,
+      limit: bank.limit.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }),
+      date: bank.date >= 10 ? bank.date : `0${bank.date}`
+    }
+  })
 
   const { mutate, isPending } = useMutation({
        mutationFn: async (id: string) => {
@@ -32,12 +40,11 @@ export function BanksCards(){
   return(
     <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       <Toast />
-      {banks!.map(bank => (
+      {banksArray!.map(bank => (
         <div key={bank.id} className="w-full bg-gray-700 rounded-lg flex flex-col gap-4">
-          <strong className="text-3xl font-medium px-4 text-white mt-4">{bank.bank}</strong>
-          <strong className="text-lg font-medium px-4 text-white">Limite: {bank.limit.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</strong>
-          <strong className="text-lg font-medium px-4 text-white">Limite Disponivel: {bank.limit.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</strong>
-          <strong className="text-lg font-medium px-4 text-white">Dia Vencimento Fatura: {bank.date >= 10 ? bank.date : `0${bank.date}`}</strong>
+          <strong className="text-3xl font-medium px-4 text-white mt-4">{bank.name}</strong>
+          <strong className="text-lg font-medium px-4 text-white">Limite Total: {bank.limit}</strong>
+          <strong className="text-lg font-medium px-4 text-white">Dia Vencimento Fatura: {bank.date}</strong>
           <div className="w-full grid grid-cols-2">
             <Dialog.Root>
               <Dialog.Trigger asChild>

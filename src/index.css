@@ -36,3 +36,16 @@ body{
   background-position: center;
   background-repeat: no-repeat;
 }
+
+.css-1fw5qro-MuiPaper-root, .css-y8ay40-MuiTableCell-root, .css-i02g0k-MuiTableCell-root, .css-1ex1afd-MuiTableCell-root, .css-177gid-MuiTableCell-root, .css-pdct74-MuiTablePagination-selectLabel, .css-78c6dr-MuiToolbar-root-MuiTablePagination-toolbar, .css-194a1fa-MuiSelect-select-MuiInputBase-input.MuiSelect-select, .css-pqjvzy-MuiSvgIcon-root-MuiSelect-icon{
+  background-color: #181C2A !important;
+  color: white !important;
+}
+
+.css-1fw5qro-MuiPaper-root{
+  box-shadow: unset !important;
+}
+
+.css-1fw5qro-MuiPaper-root, .css-y8ay40-MuiTableCell-root, .css-i02g0k-MuiTableCell-root, .css-1ex1afd-MuiTableCell-root, .css-177gid-MuiTableCell-root{
+  border-bottom: 1px solid #252D4A !important;
+}

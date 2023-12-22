@@ -20,7 +20,7 @@ export interface Product{
 export function Planning(){
   const { user, fetchTransaction, fetchBank, productsCollectionRef } = useContext(ContextApplication);
   
-  const { data: products, isFetching: fetchProducts, refetch: refetchProducts } = useQuery<Product[], Error>({
+  const { data: products, isFetching: fetchProducts } = useQuery<Product[], Error>({
     queryKey: ["products"],
     queryFn: async () => {
       const data = await getDocs(productsCollectionRef);
@@ -53,11 +53,11 @@ export function Planning(){
                     <ShoppingCart className="w-5 h-5" size={20} color="white" />
                   </button>
                 </Dialog.Trigger>
-                <NewPurchase refetchProducts={refetchProducts} />
+                <NewPurchase />
               </Dialog.Root>
             </div>
           </div>
-          <Products products={products!} refetchProducts={refetchProducts} />
+          <Products products={products!} />
         </>
       ) : (
         <div className="w-full h-[70vh] flex items-center justify-center">

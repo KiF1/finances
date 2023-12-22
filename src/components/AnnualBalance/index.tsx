@@ -1,10 +1,12 @@
 import { memo, useContext, useMemo } from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Rectangle } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Rectangle, AreaChart, Area } from 'recharts';
 import { ContextApplication } from '../../context/ContextApplication';
 import { calcTotalInYear } from '../../utils/calc-total-in-year';
 import { Table } from '../Table';
 import { TableMonths } from '../TableMonths';
 import { ArrayTransactionsPerMonthInYear } from '../../pages/Home';
+import { CustomTooltip } from '../CustomTooltip';
+import { CustomTooltipBar } from '../CustomTooltipBar';
 
 interface Props{
   arrayTransactionsPerMonth: ArrayTransactionsPerMonthInYear[]
@@ -37,12 +39,13 @@ export function AnnualBalanceComponent({ arrayTransactionsPerMonth }: Props){
         <strong className="text-xl font-medium text-white">Saldo Meses - {yearSelected}</strong>
         <div className='w-full h-[300px] mt-8'>
           <ResponsiveContainer width="100%" height="100%" >
-            <BarChart width={150} height={40} data={arrayTransactionsPerMonth}>
-              <Bar dataKey="saldo" fill="#252D4A" />
-              <XAxis dataKey="mês" />
-              <YAxis />
-              <Tooltip />
-            </BarChart>
+            <AreaChart width={150} height={40} data={arrayTransactionsPerMonth}>
+              <Area type="monotone" stroke="#2A2879" dataKey="saldo" fill="#252D4A" />
+              <XAxis dataKey="mês"  />
+              <YAxis tickCount={7} tickFormatter={(number) => `R$ ${number}`} />
+              <Tooltip content={<CustomTooltip />} />
+              <CartesianGrid strokeDasharray="3 3" opacity={0.1} vertical={false} />
+            </AreaChart>
           </ResponsiveContainer>
         </div>
       </div>
@@ -51,13 +54,13 @@ export function AnnualBalanceComponent({ arrayTransactionsPerMonth }: Props){
         <div className='w-full h-[300px] mt-8'>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart width={500} height={300} data={arrayTransactionsPerMonth}>
-            <CartesianGrid strokeDasharray="3 3" />
+            <CartesianGrid strokeDasharray="3 3" opacity={0.1} vertical={false} />
             <XAxis dataKey="mês" />
-            <YAxis />
-            <Tooltip />
+            <YAxis tickCount={7} tickFormatter={(number) => `R$ ${number}`} />
+            <Tooltip content={<CustomTooltipBar />} />
             <Legend />
-            <Bar dataKey="entradas" fill="#252D4A" activeBar={<Rectangle fill="pink" stroke="blue" />} />
-            <Bar dataKey="saídas" fill="#303F73" activeBar={<Rectangle fill="gold" stroke="purple" />} />
+            <Bar dataKey="entradas" fill="#252D4A" activeBar={<Rectangle fill="#252D4A" stroke="blue" />} />
+            <Bar dataKey="saídas" fill="#303F73" activeBar={<Rectangle fill="#303F73" stroke="purple" />} />
           </BarChart>
         </ResponsiveContainer>
         </div>

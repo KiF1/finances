@@ -5,12 +5,13 @@ export interface TransactionsFormatedDayAndTotal{
   total: number;
   type: string;
   method: string;
+  bank: string;
   installments: number | undefined;
 }
 
 export function FilterBankInvoiceInYear(transactions: Transaction[], year: number, bank: string, dayInvoice: number){
   const months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho','Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
-  const transactionsInstallments = transactions.filter(transaction => transaction.method.split('_')[0] === 'credit');
+  const transactionsInstallments = transactions.filter(transaction => transaction.method === 'credit');
 
   function calcTotalInMonth(transactionsFormatedDayAndTotal: TransactionsFormatedDayAndTotal[], monthActual: number) {
     let limitSpent = 0;
@@ -21,7 +22,7 @@ export function FilterBankInvoiceInYear(transactions: Transaction[], year: numbe
     for (let transaction of transactionsFormatedDayAndTotal) {
       const dayActualTransaction = parseInt(transaction.date.split('/')[0])
 
-      if(transaction.method.split('_')[0] === 'credit' && transaction.installments && dayActualTransaction < invoiceClosingDay && transaction.method.split('_')[1] === bank.toLocaleLowerCase()){
+      if(transaction.method === 'credit' && transaction.installments && dayActualTransaction < invoiceClosingDay && transaction.bank === bank.toLocaleLowerCase()){
         const installmentAmount = transaction.total / transaction.installments;
 
         limitSpent += transaction.total
@@ -38,7 +39,7 @@ export function FilterBankInvoiceInYear(transactions: Transaction[], year: numbe
       const finalDate = new Date(monthActual >= 10 ? `${year}/${monthActual}/01` : `${year}/0${monthActual}/01`);
       const monthsDiff = (finalDate.getFullYear() - startDate.getFullYear()) * 12 + (finalDate.getMonth() - startDate.getMonth());
 
-      if(monthInstallmentInLoop !== monthActual && transactionInstallment.installments && monthsDiff <= transactionInstallment.installments && monthsDiff > 0 && transactionInstallment.method.split('_')[1] === bank.toLocaleLowerCase()){
+      if(monthInstallmentInLoop !== monthActual && transactionInstallment.installments && monthsDiff <= transactionInstallment.installments && monthsDiff > 0 && transactionInstallment.bank === bank.toLocaleLowerCase()){
         limitSpent += transactionInstallment.value
         totalOutcome += transactionInstallment.value / transactionInstallment.installments
       }
@@ -60,10 +61,8 @@ export function FilterBankInvoiceInYear(transactions: Transaction[], year: numbe
     return monthsArray.filter(month => month.fatura !== 0);
   }
 
-  const arrayTransactions = transactions.filter(transaction =>
-    transaction.createdAt.split('/')[2] === String(year)
-  ).map(transaction => {
-    return { date: transaction.createdAt, total: transaction.value, type: transaction.type, method: transaction.method, installments: transaction.installments }
+  const arrayTransactions = transactions.map(transaction => {
+    return { date: transaction.createdAt, total: transaction.value, type: transaction.type, method: transaction.method, installments: transaction.installments, bank: transaction.bank }
   });
 
   return formatToArrayOfMonthsInYear(arrayTransactions)

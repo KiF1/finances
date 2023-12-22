@@ -7,6 +7,8 @@ import { X } from "phosphor-react";
 import { doc, updateDoc } from "firebase/firestore";
 import { Toast } from "../../Toast";
 import { database } from "../../../lib/firebase";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import ReactLoading from "react-loading";
 
 interface Props{
   id: string;
@@ -21,25 +23,31 @@ const bankFormSchema = z.object({
 type BankFormInputs = z.infer<typeof bankFormSchema>;
 
 export function EditBank({ id }: Props){
+  const queryClient = useQueryClient();
+  
   const {
     register,
     handleSubmit,
-    formState: { isSubmitting },
     reset,
   } = useForm<BankFormInputs>({
     resolver: zodResolver(bankFormSchema),
   });
 
-  async function updateBank(data: BankFormInputs) {
-    try {
-      const bankDoc = doc(database, "banks", id);
-      await updateDoc(bankDoc, data);
-      await toast.success(`Os dados foram atualizados sucesso!`)
-      await reset();
-    } catch {
-      toast.error('Erro ao atualizar os dados!')
-    }
-  }
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (data: BankFormInputs) => {
+     const bankDocReference = doc(database, "banks", id);
+     return await updateDoc(bankDocReference, data);;
+   },
+   onSuccess: () => {
+     toast.success(`Os dados foram atualizados sucesso!`);
+     reset();
+     queryClient.invalidateQueries({ queryKey: ["banks"] });
+   },
+   onError: () => {
+     toast.error('Erro ao atualizar os dados!');
+   }
+ },
+)
 
 
   return (
@@ -53,7 +61,7 @@ export function EditBank({ id }: Props){
           </Dialog.Close>
           <form
             className="mt-8 flex flex-col gap-4"
-            onSubmit={handleSubmit(updateBank)}
+            onSubmit={handleSubmit((data: BankFormInputs) => mutate(data))}
           >
             <input
               type="number"
@@ -70,11 +78,11 @@ export function EditBank({ id }: Props){
               className="w-full p-3 rounded-lg bg-gray-700 text-white placeholder-white"
             />
             <button
-              disabled={isSubmitting}
+              disabled={isPending}
               type="submit"
-              className="w-full mt-6 h-14 bg-gray-700 text-white font-bold px-5 rounded-lg cursor-pointer hover:bg-gray-600 transition duration-200"
+              className="w-full mt-6 h-14 bg-gray-700 text-white font-bold px-5 rounded-lg cursor-pointer hover:bg-gray-600 transition duration-200 flex justify-center items-center"
             >
-              Editar
+              {!isPending ? 'Editar' : <ReactLoading className="w-fit" type="spinningBubbles" color="#ffffff" height="23px" width="23px"/>}
             </button>
           </form>
         </div>

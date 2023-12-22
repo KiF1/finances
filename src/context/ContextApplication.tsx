@@ -10,6 +10,7 @@ export interface Transaction{
   createdAt: string;
   description: string;
   installments: number | undefined;
+  bank: string;
   method: string;
   type: string;
   userId: string;

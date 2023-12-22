@@ -9,10 +9,8 @@ import { ContextApplication } from "../../../context/ContextApplication";
 import { addDoc } from "firebase/firestore";
 import dayjs from "dayjs";
 import { Toast } from "../../Toast";
-
-interface Props{
-  refetchProducts: () => void;
-}
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import ReactLoading from "react-loading";
 
 
 const newpurchaseFormSchema = z.object({
@@ -24,14 +22,11 @@ const newpurchaseFormSchema = z.object({
 
 type NewPurchaseFormInputs = z.infer<typeof newpurchaseFormSchema>;
 
-export function NewPurchase({ refetchProducts }: Props){
+export function NewPurchase(){
+  const queryClient = useQueryClient();
+
   const { user, productsCollectionRef } = useContext(ContextApplication)
-  const {
-    register,
-    handleSubmit,
-    formState: { isSubmitting },
-    reset,
-  } = useForm<NewPurchaseFormInputs>({
+  const { register, handleSubmit } = useForm<NewPurchaseFormInputs>({
     resolver: zodResolver(newpurchaseFormSchema),
     defaultValues: {
       userId: user?.uid,
@@ -39,16 +34,19 @@ export function NewPurchase({ refetchProducts }: Props){
     }
   });
 
-  async function handleCreateNewPurchase(data: NewPurchaseFormInputs) {
-    try {
-      await addDoc(productsCollectionRef, data);
-      await toast.success(`O Produto: ${data.product}, foi cadastrado com sucesso!`)
-      await reset();
-      await refetchProducts();
-    } catch {
-      toast.error('Erro ao realizar cadastro de produto!')
-    }
-  }
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (data: NewPurchaseFormInputs) => {
+     return await addDoc(productsCollectionRef, data);
+   },
+   onSuccess: () => {
+     toast.success(`Produto adicionado com sucesso!`);
+     queryClient.invalidateQueries({ queryKey: ["products"] });
+   },
+   onError: () => {
+     toast.error('Erro ao adicionar Produto');
+   }
+ },
+)
 
 
   return (
@@ -56,13 +54,13 @@ export function NewPurchase({ refetchProducts }: Props){
       <Toast />
       <div className="fixed z-[200] w-full h-full inset-0 bg-black bg-opacity-75">
         <div className="w-[85%] md:w-[35%] mx-auto p-10 bg-gray-800 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-md">
-          <Dialog.Title className="text-white">Adicione o Produto</Dialog.Title>
+          <Dialog.Title className="text-white">Adicione o Produto Desejado!</Dialog.Title>
           <Dialog.Close className="absolute top-6 right-6 bg-transparent border-0 cursor-pointer text-gray-600">
             <X size={24} />
           </Dialog.Close>
           <form
             className="mt-8 flex flex-col gap-4"
-            onSubmit={handleSubmit(handleCreateNewPurchase)}
+            onSubmit={handleSubmit((data: NewPurchaseFormInputs) => mutate(data))}
           >
             <input
               type="text"
@@ -79,11 +77,11 @@ export function NewPurchase({ refetchProducts }: Props){
               className="w-full p-3 rounded-lg bg-gray-700 text-white placeholder-white"
             />
             <button
-              disabled={isSubmitting}
+              disabled={isPending}
               type="submit"
-              className="w-full mt-6 h-14 bg-gray-700 text-white font-bold px-5 rounded-lg cursor-pointer hover:bg-gray-600 transition duration-200"
+              className="w-full mt-6 h-14 bg-gray-700 text-white font-bold px-5 rounded-lg cursor-pointer hover:bg-gray-600 transition duration-200 flex justify-center items-center"
             >
-              Cadastrar
+              {!isPending ? 'Cadastrar' : <ReactLoading className="w-fit" type="spinningBubbles" color="#ffffff" height="23px" width="23px"/>}
             </button>
           </form>
         </div>
