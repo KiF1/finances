@@ -10,6 +10,7 @@ interface BankDadsMonth{
   fatura: number;
   limitSpent: number;
 }
+
 export function HistoryBank(){
   const [bankSelectedTransactions, setBankSelectedTransactions] = useState<BankDadsMonth[] | [] | undefined>(undefined);
   const [availableLimit, setAvailableLimit] = useState<string | undefined>(undefined)

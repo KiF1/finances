@@ -51,17 +51,17 @@ export function AnnualBalanceComponent({ arrayTransactionsPerMonth }: Props){
       <div className='w-full flex flex-col gap-8 bg-gray-700 rounded-lg p-8'>
         <strong className="text-xl font-medium text-white">Entradas | Saídas - {yearSelected}</strong>
         <div className='w-full h-[300px] mt-8'>
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart width={500} height={300} data={arrayTransactionsPerMonth}>
-            <CartesianGrid strokeDasharray="3 3" opacity={0.1} vertical={false} />
-            <XAxis dataKey="mês" />
-            <YAxis tickCount={7} tickFormatter={(number) => `R$ ${number}`} />
-            <Tooltip content={<CustomTooltipBar />} />
-            <Legend />
-            <Bar dataKey="entradas" fill="#252D4A" activeBar={<Rectangle fill="#252D4A" stroke="blue" />} />
-            <Bar dataKey="saídas" fill="#303F73" activeBar={<Rectangle fill="#303F73" stroke="purple" />} />
-          </BarChart>
-        </ResponsiveContainer>
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart width={500} height={300} data={arrayTransactionsPerMonth}>
+              <CartesianGrid strokeDasharray="3 3" opacity={0.1} vertical={false} />
+              <XAxis dataKey="mês" />
+              <YAxis tickCount={7} tickFormatter={(number) => `R$ ${number}`} />
+              <Tooltip content={<CustomTooltipBar />} />
+              <Legend />
+              <Bar dataKey="entradas" fill="#252D4A" activeBar={<Rectangle fill="#252D4A" stroke="blue" />} />
+              <Bar dataKey="saídas" fill="#303F73" activeBar={<Rectangle fill="#303F73" stroke="purple" />} />
+            </BarChart>
+          </ResponsiveContainer>
         </div>
       </div>
       <div className='w-full flex flex-col gap-8 bg-gray-700 rounded-lg p-8'>

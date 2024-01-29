@@ -7,8 +7,6 @@ interface Props{
 }
 
 export function CustomTooltip({ active, payload, label }: Props){
-  console.log(payload)
-
   return(
     <>
       {active && (

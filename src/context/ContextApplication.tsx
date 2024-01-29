@@ -26,7 +26,7 @@ export interface Bank{
   userId: string;
 }
 
-interface ContextType {
+export interface ContextType {
   user: User | null;
   yearSelected: number;
   transactions: Transaction[] | undefined;

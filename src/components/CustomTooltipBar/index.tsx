@@ -11,8 +11,6 @@ interface Props{
 }
 
 export function CustomTooltipBar({ active, payload, label }: Props){
-  console.log(payload)
-
   return(
     <>
       {active && (

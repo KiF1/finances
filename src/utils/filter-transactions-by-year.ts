@@ -20,7 +20,7 @@ export function filterTransactionsByYear(transactions: Transaction[], banks: Ban
     
     for (let transaction of transactionsFormatedDayAndTotal) {
       const bankTransaction = transaction.bank.toLocaleLowerCase();
-      const dateBank = banks!.find(bank => bank.bank.toLocaleLowerCase() === bankTransaction)!.date;
+      const dateBank = banks!.find(bank => bank.bank.toLocaleLowerCase() === bankTransaction)?.date;
       
       const invoiceClosingDay = dateBank;
       const dayActualTransaction = parseInt(transaction.date.split('/')[0])
@@ -29,7 +29,7 @@ export function filterTransactionsByYear(transactions: Transaction[], banks: Ban
       if(transaction.type === 'income'){
         total += transaction.total;
         totalIncome += transaction.total;
-      }else if(methodPayment === 'credit' && transaction.installments && dayActualTransaction < invoiceClosingDay){
+      }else if(methodPayment === 'credit' && transaction.installments && dayActualTransaction < invoiceClosingDay!){
         const installmentAmount = transaction.total / transaction.installments;
         total -= installmentAmount
         totalOutcome += installmentAmount

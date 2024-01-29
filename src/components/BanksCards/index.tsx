@@ -2,17 +2,14 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { Pencil, Trash } from 'phosphor-react';
 import { useContext } from "react";
 import { ContextApplication } from "../../context/ContextApplication";
-import { database } from '../../lib/firebase';
-import { deleteDoc, doc } from "firebase/firestore";
 import { Toast } from "../Toast";
-import toast from "react-hot-toast";
 import { EditBank } from "../Modal/EditBank";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import ReactLoading from "react-loading";
+import { useMutationDelete } from "../../hooks/useMutationDelete";
 
 export function BanksCards(){
   const { banks } = useContext(ContextApplication);
-  const queryClient = useQueryClient();
+  const { mutate, isPending } = useMutationDelete()
 
   const banksArray = banks?.map(bank => {
     return {
@@ -22,20 +19,6 @@ export function BanksCards(){
       date: bank.date >= 10 ? bank.date : `0${bank.date}`
     }
   })
-
-  const { mutate, isPending } = useMutation({
-       mutationFn: async (id: string) => {
-        return await deleteDoc(doc(database, "banks", id));
-      },
-      onSuccess: () => {
-        toast.success(`Banco deletado com sucesso!`);
-        queryClient.invalidateQueries({ queryKey: ["banks"] });
-      },
-      onError: () => {
-        toast.error('Erro ao deletar banco!');
-      }
-    },
-  )
   
   return(
     <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -54,7 +37,7 @@ export function BanksCards(){
               </Dialog.Trigger>
               <EditBank id={bank.id} />
             </Dialog.Root>
-            <button onClick={() => mutate(bank.id)} className="w-full mt-2 h-14 bg-gray-600 rounded-br-lg text-white font-bold px-5 cursor-pointer hover:opacity-75 transition duration-200 flex justify-center items-center">
+            <button data-testid="button-delete" disabled={isPending} onClick={() => mutate({ id: bank.id })} className="w-full mt-2 h-14 bg-gray-600 rounded-br-lg text-white font-bold px-5 cursor-pointer hover:opacity-75 transition duration-200 flex justify-center items-center">
               {!isPending ? <Trash size={24} color="white" className="m-auto" /> :  <ReactLoading className="w-fit" type="spinningBubbles" color="#ffffff" height="23px" width="23px"/>}
             </button>
           </div>
