@@ -8,7 +8,7 @@
 
 
 ## Descrição:
-- Esse projeto é um projeto onde estou adicionando tudo aquilo que tenho estudando tanto em front-end quanto em back-end. Tentei nesse projeto juntar tudo o que estou estudando de front-end como perfomace, testes, SEO, acessibilidade, etc em um projeto. Além disso, também fazer algo que possa me ajudar no dia a dia. O finances é uma aplicação de controle de finanças feita em React com Firebase, mas atualmente estou construindo uma nova versão com React e Nest.Js com mais funcionalidades e com resolução dos bugas atuais.
+- Esse projeto é um projeto onde estou adicionando tudo aquilo que tenho estudando tanto em front-end quanto em back-end. Tentei nesse projeto juntar tudo o que estou estudando de front-end como perfomace, testes, SEO, acessibilidade, etc em um projeto. Além disso, também fazer algo que possa me ajudar no dia a dia. O finances é uma aplicação de controle de finanças feita em React com Firebase, mas atualmente estou construindo uma nova versão com Nest.Js e Mongo.DB com mais funcionalidades e com resolução dos bugs atuais.
 - Com o Finances você consegue listar suas transações e gastos e analisar como está sendo seus gastos durante o tempo, você pode comparar meses, anos e analisar como está sua saúde financeira, como também fazer metas de compras e de investimentos.
 
 ## Rodando o Projeto:
